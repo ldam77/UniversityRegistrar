@@ -12,6 +12,7 @@ An app for a University registrar to keep track of students and courses.
 Install University Registrar by downloading the folder.
 
 ## Database
+* Create a database in MySql and then import MySql file or create a new table with following commands.
 * CREATE TABLE `students` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `enrollment_date` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`));
 * CREATE TABLE `courses` ( `id` INT NOT NULL AUTO_INCREMENT , `course_name` VARCHAR(255) NOT NULL , `course_number` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`));
 * CREATE TABLE `students_courses` ( `id` INT NOT NULL AUTO_INCREMENT , `student_id` INT NOT NULL , `course_id` INT NOT NULL , PRIMARY KEY (`id`));
