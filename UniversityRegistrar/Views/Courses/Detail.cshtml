@@ -1,0 +1,22 @@
+<h1>@Model.GetCourseName() Student List</h1>
+
+<ul>
+  @foreach(var student in Model.GetStudents())
+  {
+    <li>@student.GetName()</li>
+  }
+</ul>
+
+<form action="/Courses/@Model.GetId()" method="post">
+ <div class="">
+   <h3>Add another student to this course:</h3>
+   <label for="studentName">Student Name:</label>
+   <input type="text" name="studentName" required>
+ </div>
+ <button type="submit" class="">ADD</button>
+</form>
+
+<h3><a href="/">Home</a></h3>
+<h3><a href="/Students">List of Students</a></h3>
+<h3><a href="/Students/new">Create a student entry</a></h3>
+<h3><a href="/Courses/new">Create a Course</a></h3>

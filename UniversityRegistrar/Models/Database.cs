@@ -1,8 +1,8 @@
 using System;
 using MySql.Data.MySqlClient;
-using PigOut;
+using UniversityRegistrar;
 
-namespace PigOut.Models
+namespace UniversityRegistrar.Models
 {
     public class DB
     {

@@ -1,0 +1,12 @@
+<h1>List of Students</h1>
+<ul>
+  @foreach(var student in Model)
+  {
+    <li><a href="/Students/@student.GetId()">@student.GetName()</a>, @student.GetEnrollmentDate()</li>
+  }
+</ul>
+
+<h3><a href="/">Home</a></h3>
+<h3><a href="/Students/new">Create a student entry</a></h3>
+<h3><a href="/Courses">List of Courses</a></h3>
+<h3><a href="/Courses/new">Create a Course</a></h3>

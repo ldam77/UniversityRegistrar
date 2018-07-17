@@ -11,7 +11,7 @@ namespace UniversityRegistrar.Models
     private string courseName;
     private string courseNumber;
 
-    public Student (string newCourseName, string newCourseNumber, int newId = 0)
+    public Course (string newCourseName, string newCourseNumber, int newId = 0)
     {
       id = newId;
       courseName = newCourseName;
@@ -21,11 +21,11 @@ namespace UniversityRegistrar.Models
     {
       return id;
     }
-    public int GetCourseName()
+    public string GetCourseName()
     {
       return courseName;
     }
-    public int GetCourseNumber()
+    public string GetCourseNumber()
     {
       return courseNumber;
     }
@@ -52,14 +52,14 @@ namespace UniversityRegistrar.Models
       cmd.CommandText = @"INSERT INTO courses (course_name, course_number) VALUES (@inputName, @inputNumber);";
       MySqlParameter newName = new MySqlParameter();
       newName.ParameterName = "@inputName";
-      newName.Value = this.name;
+      newName.Value = this.courseName;
       cmd.Parameters.Add(newName);
       MySqlParameter newCourse = new MySqlParameter();
-      newCourse.ParameterName = "@inputCourse";
-      newCourse.Value = this.Course;
+      newCourse.ParameterName = "@inputNumber";
+      newCourse.Value = this.courseNumber;
       cmd.Parameters.Add(newCourse);
       cmd.ExecuteNonQuery();
-      Id = (int) cmd.LastInsertedId;
+      id = (int) cmd.LastInsertedId;
       conn.Close();
       if (conn !=null)
       {
@@ -68,7 +68,7 @@ namespace UniversityRegistrar.Models
     }
     public static List<Course> GetAll()
     {
-      List <Course> newCourse = new List<Course> {};
+      List <Course> newCourses = new List<Course> {};
       MySqlConnection conn = DB.Connection();
       conn.Open();
       MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
@@ -80,14 +80,14 @@ namespace UniversityRegistrar.Models
         string courseName = rdr.GetString(1);
         string courseNumber = rdr.GetString(2);
         Course newCourse = new Course(courseName, courseNumber, id);
-        allCourses.Add(newCourse);
+        newCourses.Add(newCourse);
       }
       conn.Close();
       if (conn != null)
       {
         conn.Dispose();
       }
-      return allRestaurants;
+      return newCourses;
     }
     public static Course FindById(int searchId)
     {
@@ -123,7 +123,7 @@ namespace UniversityRegistrar.Models
       MySqlConnection conn = DB.Connection();
       conn.Open();
       MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"SELECT students.* FROM courses JOIN student_courses ON(courses.id = student_courses.course_id) JOIN students ON (student_course.student_id = students.id) WHERE courses.id = @idParameter;";
+      cmd.CommandText = @"SELECT students.* FROM courses JOIN students_courses ON(courses.id = students_courses.course_id) JOIN students ON (students_courses.student_id = students.id) WHERE courses.id = @idParameter;";
       MySqlParameter parameterId = new MySqlParameter();
       parameterId.ParameterName = "@idParameter";
       parameterId.Value =this.id;
@@ -132,8 +132,8 @@ namespace UniversityRegistrar.Models
       while(rdr.Read())
       {
         int id = rdr.GetInt32(0);
-        string name = rdr.String(1);
-        string enrollmentDate = rdr.String(2);
+        string name = rdr.GetString(1);
+        string enrollmentDate = rdr.GetString(2);
         Student foundStudent = new Student(name, enrollmentDate, id);
         myStudents.Add(foundStudent);
       }

@@ -1,5 +1,14 @@
-<h1>Pigggettt Boarding School Registration</h1>
+<h1>@Model.GetName()'s Courses</h1>
 
+<ul>
+  @foreach (var course in Model.GetCourse())
+  {
+    <li>@course.GetCourseName()</li>
+  }
+</ul>
+
+
+<h3><a href="/">Home</a></h3>
 <h3><a href="/Students">List of Students</a></h3>
 <h3><a href="/Students/new">Create a student entry</a></h3>
 <h3><a href="/Courses">List of Courses</a></h3>

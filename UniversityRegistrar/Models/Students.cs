@@ -15,17 +15,17 @@ namespace UniversityRegistrar.Models
     {
       id = newId;
       name = newName;
-      enrollment = newEnrollmentDate;
+      enrollmentDate = newEnrollmentDate;
     }
     public int GetId()
     {
       return id;
     }
-    public int GetName()
+    public string GetName()
     {
       return name;
     }
-    public int GetEnrollmentDate()
+    public string GetEnrollmentDate()
     {
       return enrollmentDate;
     }
@@ -56,10 +56,10 @@ namespace UniversityRegistrar.Models
       cmd.Parameters.Add(newName);
       MySqlParameter newEnrollmentDate = new MySqlParameter();
       newEnrollmentDate.ParameterName = "@inputEnrollmentDate";
-      newEnrollmentDate.Value = this.EnrollmentDate;
+      newEnrollmentDate.Value = this.enrollmentDate;
       cmd.Parameters.Add(newEnrollmentDate);
       cmd.ExecuteNonQuery();
-      Id = (int) cmd.LastInsertedId;
+      id = (int) cmd.LastInsertedId;
       conn.Close();
       if (conn !=null)
       {
@@ -68,7 +68,7 @@ namespace UniversityRegistrar.Models
     }
     public static List<Student> GetAll()
     {
-      List <Student> newStudent = new List<Student> {};
+      List <Student> newStudents = new List<Student> {};
       MySqlConnection conn = DB.Connection();
       conn.Open();
       MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
@@ -80,14 +80,14 @@ namespace UniversityRegistrar.Models
         string name = rdr.GetString(1);
         string enrollmentDate = rdr.GetString(2);
         Student newStudent = new Student(name, enrollmentDate, id);
-        allStudents.Add(newStudent);
+        newStudents.Add(newStudent);
       }
       conn.Close();
       if (conn != null)
       {
         conn.Dispose();
       }
-      return allRestaurants;
+      return newStudents;
     }
     public static Student FindById(int searchId)
     {
@@ -117,13 +117,41 @@ namespace UniversityRegistrar.Models
       }
       return foundStudent;
     }
+    public static Student FindByName(string searchName)
+    {
+      int id = 0;
+      string name = "";
+      string enrollmentDate = "";
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM students WHERE name = @nameMatch;";
+      MySqlParameter paraName = new MySqlParameter();
+      paraName.ParameterName = "@nameMatch";
+      paraName.Value = searchName;
+      cmd.Parameters.Add(paraName);
+      MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while(rdr.Read())
+      {
+        id = rdr.GetInt32(0);
+        name = rdr.GetString(1);
+        enrollmentDate = rdr.GetString(2);
+      }
+      Student foundStudent =  new Student(name, enrollmentDate, id);
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return foundStudent;
+    }
     public List<Course> GetCourse()
     {
       List<Course> myCourses = new List<Course> {};
       MySqlConnection conn = DB.Connection();
       conn.Open();
       MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"SELECT courses.* FROM students JOIN student_courses ON(students.id = student_courses.student_id) JOIN courses ON (student_course.course_id = courses.id) WHERE students.id = @idParameter;";
+      cmd.CommandText = @"SELECT courses.* FROM students JOIN students_courses ON(students.id = students_courses.student_id) JOIN courses ON (students_courses.course_id = courses.id) WHERE students.id = @idParameter;";
       MySqlParameter parameterId = new MySqlParameter();
       parameterId.ParameterName = "@idParameter";
       parameterId.Value =this.id;
@@ -132,8 +160,8 @@ namespace UniversityRegistrar.Models
       while(rdr.Read())
       {
         int id = rdr.GetInt32(0);
-        string courseName = rdr.String(1);
-        string courseNumber = rdr.String(2);
+        string courseName = rdr.GetString(1);
+        string courseNumber = rdr.GetString(2);
         Course foundCourse = new Course(courseName, courseNumber, id);
         myCourses.Add(foundCourse);
       }

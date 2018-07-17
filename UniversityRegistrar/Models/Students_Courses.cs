@@ -59,7 +59,7 @@ namespace UniversityRegistrar.Models
       newCourseID.Value = this.courseID;
       cmd.Parameters.Add(newCourseID);
       cmd.ExecuteNonQuery();
-      Id = (int) cmd.LastInsertedId;
+      id = (int) cmd.LastInsertedId;
       conn.Close();
       if (conn !=null)
       {
@@ -83,8 +83,8 @@ namespace UniversityRegistrar.Models
       while(rdr.Read())
       {
         id = rdr.GetInt32(0);
-        studentId = rdr.GetString(1);
-        courseId = rdr.GetString(2);
+        studentId = rdr.GetInt32(1);
+        courseId = rdr.GetInt32(2);
       }
       StudentCourse foundStudentCourse =  new StudentCourse(studentId, courseId, id);
       conn.Close();
@@ -96,7 +96,7 @@ namespace UniversityRegistrar.Models
     }
     public static List<StudentCourse> GetAll()
     {
-      List <StudentCourse> newStudentCourse = new List<StudentCourse> {};
+      List <StudentCourse> newStudentCourses = new List<StudentCourse> {};
       MySqlConnection conn = DB.Connection();
       conn.Open();
       MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
@@ -105,17 +105,17 @@ namespace UniversityRegistrar.Models
       while(rdr.Read())
       {
         int id = rdr.GetInt32(0);
-        int studentId = rdr.GetString(1);
-        int courseId = rdr.GetString(2);
+        int studentId = rdr.GetInt32(1);
+        int courseId = rdr.GetInt32(2);
         StudentCourse newStudentCourse = new StudentCourse(studentId, courseId, id);
-        allStudentCourses.Add(newStudentCourse);
+        newStudentCourses.Add(newStudentCourse);
       }
       conn.Close();
       if (conn != null)
       {
         conn.Dispose();
       }
-      return allRestaurants;
+      return newStudentCourses;
     }
     public static void DeleteAll()
     {
