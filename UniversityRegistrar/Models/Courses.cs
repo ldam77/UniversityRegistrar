@@ -117,6 +117,32 @@ namespace UniversityRegistrar.Models
       }
       return foundCourse;
     }
+    public List<Student> GetStudents()
+    {
+      List<Student> myStudents = new List<Student> {};
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT students.* FROM courses JOIN student_courses ON(courses.id = student_courses.course_id) JOIN students ON (student_course.student_id = students.id) WHERE courses.id = @idParameter;";
+      MySqlParameter parameterId = new MySqlParameter();
+      parameterId.ParameterName = "@idParameter";
+      parameterId.Value =this.id;
+      cmd.Parameters.Add(parameterId);
+      MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while(rdr.Read())
+      {
+        int id = rdr.GetInt32(0);
+        string name = rdr.String(1);
+        string enrollmentDate = rdr.String(2);
+        Student foundStudent = new Student(name, enrollmentDate, id);
+        myStudents.Add(foundStudent);
+      }
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return myStudents;
+    }
     public static void DeleteAll()
     {
       MySqlConnection conn = DB.Connection();
