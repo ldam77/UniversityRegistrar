@@ -66,6 +66,57 @@ namespace UniversityRegistrar.Models
         conn.Dispose();
       }
     }
+    public static StudentCourse FindById(int searchId)
+    {
+      int id = 0;
+      int studentId = 0;
+      int courseId = 0;
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM students_courses WHERE id = @idMatch;";
+      MySqlParameter parameterId = new MySqlParameter();
+      parameterId.ParameterName = "@idMatch";
+      parameterId.Value = searchId;
+      cmd.Parameters.Add(parameterId);
+      MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while(rdr.Read())
+      {
+        id = rdr.GetInt32(0);
+        studentId = rdr.GetString(1);
+        courseId = rdr.GetString(2);
+      }
+      StudentCourse foundStudentCourse =  new StudentCourse(studentId, courseId, id);
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return foundStudentCourse;
+    }
+    public static List<StudentCourse> GetAll()
+    {
+      List <StudentCourse> newStudentCourse = new List<StudentCourse> {};
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM students_courses;";
+      MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while(rdr.Read())
+      {
+        int id = rdr.GetInt32(0);
+        int studentId = rdr.GetString(1);
+        int courseId = rdr.GetString(2);
+        StudentCourse newStudentCourse = new StudentCourse(studentId, courseId, id);
+        allStudentCourses.Add(newStudentCourse);
+      }
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return allRestaurants;
+    }
     public static void DeleteAll()
     {
       MySqlConnection conn = DB.Connection();
